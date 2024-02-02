@@ -20,3 +20,5 @@ height = wgs84.height_of(position)
 print('Latitude:', lat.degrees)
 print('Longitude:', lon.degrees)
 print('Height:', height.km)
+
+print(f'\nVelocity: {position.speed().km_per_s}')
