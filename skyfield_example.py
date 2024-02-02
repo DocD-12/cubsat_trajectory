@@ -1,26 +1,23 @@
-from skyfield.api import load
+from skyfield.api import *
 
 ts = load.timescale()
-t = ts.utc(2024, 2, 2, 14, 30)
-eph = load('de421.bsp')
-earth, mars = eph['earth'], eph['mars']
-position = earth.at(t).observe(mars)
 
-# Producing coordinates.
+t = ts.now()
+t = ts.utc(2024, 2, 2, 11, 48)
+#eph = skyfield.api.load('de421.bsp')
+stations_url = 'http://celestrak.org/NORAD/elements/stations.txt'
+satellites = load.tle_file(stations_url)
+print('Loaded', len(satellites), 'satellites')
+by_name = {sat.name: sat for sat in satellites}
+satellite = by_name['ISS (ZARYA)']
+print(satellite)
+position = satellite.at(t)
+print(f'ISS (ZARYA): {position.position.km}')
 
-print('Cartesian ICRS:')
 
-x, y, z = position.xyz.au
+lat, lon = wgs84.latlon_of(position)
+height = wgs84.height_of(position)
 
-print('  x = {:.3f} au'.format(x))
-print('  y = {:.3f} au'.format(y))
-print('  z = {:.3f} au'.format(z))
-print()
-
-print('Spherical ICRS:')
-
-ra, dec, distance = position.radec()
-
-print(' ', ra, 'right ascension')
-print(' ', dec, 'declination')
-print(' ', distance, 'distance')
+print('Latitude:', lat)
+print('Longitude:', lon)
+print('Height:', height.km)
